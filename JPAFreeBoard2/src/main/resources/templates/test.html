@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<title>글목록 보기</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+	<style>
+		table {
+			width: 100%; border: none; padding: 5px;
+		}
+		th {
+			border: 1px solid gray; padding: 5px; background-color: silver;
+			text-align: center;
+		}
+		td {
+			border: 1px solid gray; padding: 5px;  text-align: center;
+		}
+		a:link { text-decoration: none; color: black;} /* 링크 */
+		a:hover { text-decoration: none; color: black; font-weight: bolder;} /* 마우스 올라왔을떄 */
+		a:active { text-decoration: none; color: black;} /* 클릭했을때 */
+		a:visited { text-decoration: none; color: black;} /* 방문 했던곳 */
+		
+		/* 부트스트렙 페이징의 색상 변경 (
+			1.사용하는 html파일에 아래내용 복사하고 
+			2.페이지 네이션의 ul태그에 클래스명 my를 추가한다.
+			
+		) */
+	  .my.pagination > .active > a, 
+      .my.pagination > .active > span, 
+      .my.pagination > .active > a:hover, 
+      .my.pagination > .active > span:hover, 
+      .my.pagination > .active > a:focus, 
+      .my.pagination > .active > span:focus {
+        background: pink;
+        border-color: red;
+        color: blue;
+       }
+	</style>
+	<script>
+		function setCount(){
+			alert(document.querySelector("#cnt").value);
+			let size = document.querySelector("#cnt").value;
+			let p = [(${pv.currentPage})];
+			let s = size;
+			let b = [(${pv.sizeOfBlock})];
+			location.href = "?p=" + p + "&s=" + s + "&b=" + b;
+			
+		}
+	</script>	
+</head>
+<body>
+	<div class="p-2 mb-5 text-center bg-light">
+        <h2 class="mb-3">나의 자유게시판</h2>
+    </div>
+    <div class="container">
+ 		<table>
+			 <tr>
+				 <td style="text-align: right; border: none;">
+					 [[${pv.getPageInfo()}]]
+					 <select id="cnt" onchange="setCount()">
+						 <option value="5" th:selected="${pv.sizeOfPage == 5}">5개씩 보기</option>
+						 <option value="10" th:selected="${pv.sizeOfPage == 10}">10개씩 보기</option>
+						 <option value="20" th:selected="${pv.sizeOfPage == 20}">20개씩 보기</option>
+						 <option value="50" th:selected="${pv.sizeOfPage == 50}">50개씩 보기</option>
+					 </select>
+				 </td>
+			 </tr>
+			 <tr>
+				 <th>내용</th>
+			 </tr>
+			 <!-- 글이 있다면 반복문으로 출력 -->
+			 <th:block th:if="${#lists.size(pv.list) gt 0}">
+				 <tr th:each="vo : ${pv.list}" 
+				 	onmouseover="this.style.backgroundColor='pink'"
+				 	onmouseout="this.style.backgroundColor='white'">
+					 <td>[[${vo}]]</td>
+				 </tr>
+			 </th:block>
+			 <!-- 글이 없다면 반복문으로 출력 -->
+			 <th:block th:if="${#lists.size(pv.list) eq 0}">
+				 <tr>
+					 <td style="text-align: center;">등록된 글이 없습니다.</td>
+				 </tr>
+			 </th:block>	 
+			 <tr>
+				 <td style="text-align: right; border: none;">
+					 [(${pv.getPageList()})]
+				 </td>
+			 </tr>
+			 
+			 <tr>
+				 <td style="text-align: right; border: none;">
+					 [(${pv.getPageList2()})]
+				 </td>
+			 </tr>
+		 </table>
+	</div>                
+</body>
+</html>

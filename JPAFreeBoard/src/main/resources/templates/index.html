@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<title>글목록 보기</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+	<style>
+		table {
+			width: 100%; border: none; padding: 5px;
+		}
+		th {
+			border: 1px solid gray; padding: 5px; background-color: silver;
+			text-align: center;
+		}
+		td {
+			border: 1px solid gray; padding: 5px;  text-align: center;
+		}
+		a:link { text-decoration: none; color: black;} /* 링크 */
+		a:hover { text-decoration: none; color: black; font-weight: bolder;} /* 마우스 올라왔을떄 */
+		a:active { text-decoration: none; color: black;} /* 클릭했을때 */
+		a:visited { text-decoration: none; color: black;} /* 방문 했던곳 */
+	</style>
+	<script>
+		
+	</script>	
+</head>
+<body>
+	<div class="p-2 mb-5 text-center bg-light">
+        <h2 class="mb-3">나의 자유게시판</h2>
+    </div>
+    <div class="container">
+ 		<table>
+			 <tr>
+				 <td colspan="4" style="text-align: right; border: none;">
+					 전체 : [[${#lists.size(list)}]]개
+				 </td>
+			 </tr>
+			 <tr>
+				 <th>번호</th>
+				 <th>작성자</th>
+				 <th style="width: 60%;">제목</th>
+				 <th>작성일</th>
+			 </tr>
+			 <!-- 글이 있다면 반복문으로 출력 -->
+			 <th:block th:if="${#lists.size(list) gt 0}">
+				 <tr th:each="vo : ${list}" 
+				 	onmouseover="this.style.backgroundColor='pink'"
+				 	onmouseout="this.style.backgroundColor='white'">
+					 <td>[[${vo.id}]]</td>
+					 <td>[[${vo.name}]]</td>
+					 <td style="text-align: left;">
+						<a th:href="@{/view?id={id}(id=${vo.id})}">[[${vo.subject}]]</a>
+					 </td>
+					 <td>[[${#dates.format(vo.regdate,'MM-dd hh:mm')}]]</td>
+				 </tr>
+			 </th:block>
+			 <!-- 글이 없다면 반복문으로 출력 -->
+			 <th:block th:if="${#lists.size(list) eq 0}">
+				 <tr>
+					 <td colspan="4" style="text-align: center;">등록된 글이 없습니다.</td>
+				 </tr>
+			 </th:block>	 
+			 <tr>
+				 <td colspan="4" style="text-align: right; border: none;">
+					 <button class="btn btn-sm btn-outline-success" onclick="location.href='insert'">새글쓰기</button>
+				 </td>
+			 </tr>
+		 </table>
+	</div>                
+</body>
+</html>

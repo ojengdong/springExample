@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<title>글 내용보기</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+	<style>
+
+	</style>
+	<script>
+
+	</script>	
+</head>
+<body>
+	<div class="p-2 mb-5 text-center bg-light">
+        <h2 class="mb-3">나의 자유게시판 - 내용보기</h2>
+    </div>
+    <div class="container">
+			<input type="text" class="form-control" style="margin-bottom: 3px;" th:value="${board.name}" readonly>	 
+			<input type="text" class="form-control" style="margin-bottom: 3px;" th:value="${#dates.format(board.regdate,'yyyy년 MM월 dd일(EEEE) hh:mm:ss에 작성됨')}" readonly >	 
+			<input type="text" class="form-control" style="margin-bottom: 3px;" th:value="${board.subject}" readonly>
+			<section class="mb-5">
+			<textarea class="form-control h-25" rows="10">[[${board.content}]]</textarea>
+			</section>
+			<section style="text-align: right;">
+				<input type="button" value="수정하기" class="btn btn-sm btn-outline-success" th:onclick="|location.href='@{update(id=${board.id})}'|"/>
+				<input type="button" value="삭제하기" class="btn btn-sm btn-outline-success" th:onclick="|location.href='@{delete(id=${board.id})}'|"/>
+				<input type="button" value="목록으로" class="btn btn-sm btn-outline-success" onclick="location.href='/'"/>
+			</section>		 
+	</div>                
+</body>
+</html>
