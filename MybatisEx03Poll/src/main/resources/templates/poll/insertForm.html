@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<!-- Thymeleaf를 사용하겠다. -->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>등록</title>
+	<link rel="stylesheet" href="/webjars/bootstrap/5.3.0/dist/css/bootstrap.min.css">
+	<script src="/webjars/jquery/3.6.4/jquery.min.js"></script>
+	<script src="/webjars/bootstrap/5.3.0/dist/js/bootstrap.min.js"></script>
+	<script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
+	<link rel="stylesheet" href="/css/style.css">
+	<style type="text/css">
+		#info {
+			width: 90%;
+			padding: 10px;
+			margin: auto;
+			border: 1px solid gray;
+			margin-bottom: 10px;
+			font-size: 13pt;
+			border-radius: 20px;
+			color: black;
+		}
+
+		table {
+			width: 90%;
+			padding: 10px;
+			margin: auto;
+			border: none;
+			margin-bottom: 10px;
+		}
+
+		th {
+			border: 1px solid gray;
+			background-color: silver;
+			padding: 5px;
+			text-align: center;
+		}
+
+		td {
+			border: 1px solid gray;
+			padding: 5px;
+			text-align: center;
+		}
+
+		div {
+			margin-bottom: 10px;
+		}
+	</style>
+	
+	   <script>
+     $(function(){ // 문서를 모두 읽은 다음에 실행해라.(window.onload = function(){})
+			let maxItem = 10, minItem = 2, currentItem = 2; // 최대개수,최소개수,현재개수
+			// id가 appendBtn인 버튼을 클릭하면 실행해라.
+			$("#appendBtn").click(function(){
+				if(maxItem==currentItem){
+					alert("최대 " + maxItem + "개까지만 추가가 가능합니다.");
+					return;
+				}
+				// 버튼을 추가하는 코드 추가~~~~
+				currentItem++; // 현재번호 증가
+				let divTag = $("<div>투표항목 " + currentItem + " : </div>"); // 태그 만들기
+				divTag.attr("id","box"+currentItem);// 태그에 속성추가
+				// 태그안 다른 태그 삽입
+				divTag.append($("<input type='text' id='item"+currentItem+"' name='item' size='84' required placeholder='투표항목입력' />"));
+				// 만들어진 div태그에 id가 itemBox인 곳에 추가
+				$("#itemBox").append(divTag);				
+			});
+			// id가 removeBtn인 버튼을 클릭하면 실행해라.
+			$("#removeBtn").click(function(){
+				if(minItem==currentItem){
+					alert("최소 " + minItem + "개의 항목은 있어야 합니다.");
+					return;
+				}
+				// 마지막 입력항목 삭제한다.
+				$("#box"+currentItem).remove(); // 찾아서 지워라
+				currentItem--; // 개수 1개 감소
+				
+			});
+		});
+   </script>
+</head>
+
+<body>
+	<div id="info">
+		<img src="/images/linux-icon.png" width="100" height="100" alt="귀여운 펭귄" />
+		<img src="/images/linux-icon2.png" width="100" height="100" alt="건방진 펭귄" />
+		<hr />
+		<a href="/" class="btn btn-sm btn-outline-success">홈으로</a>
+	</div>
+	<table>
+		<tr>
+			<td colspan="3" style="font-size: 18pt;border: none;text-align: center;">
+				온라인 투표 등록하기
+			</td>
+		</tr>
+
+		<tr>
+			<td style="border: none; text-align: left; ">
+				<form action="/poll/insertOk" method="post">
+					<div>
+						투표제목 :
+						<input type="text" id="subject" name="subject" size="92" required placeholder="투표제목" />
+					</div>
+					<div>
+						<input type="button" value="  +  " id="appendBtn" class="btn btn-sm btn-outline-danger" />
+						<input type="button" value="  -  " id="removeBtn" class="btn btn-sm btn-outline-danger" />
+					</div>
+					<div id="itemBox">
+						<div id="box1">
+							투표항목 1 :
+							<input type="text" id="item1" name="item" size="90" required placeholder="투표항목입력" />
+						</div>
+						<div id="box2">
+							투표항목 2 :
+							<input type="text" id="item2" name="item" size="90" required placeholder="투표항목입력" />
+						</div>
+					</div>
+					
+					<div>
+						<input 
+						type="submit" 
+						class="btn btn-sm btn-outline-success" 
+						value="저장가기"/>
+						
+						<input 
+						type="button" 
+						onclick="location.href='/poll/list'" 
+						class="btn btn-sm btn-outline-success" 
+						value="돌아가기">
+					</div>
+				</form>
+			</td>
+		</tr>
+
+		<tr>
+			<td colspan="3" style="text-align: right; border: none;">
+				<button onclick="location.href='/poll/list'" class="btn btn-sm btn-outline-success">돌아가기</button>
+			</td>
+		</tr>
+	</table>
+</body>
+
+</html>

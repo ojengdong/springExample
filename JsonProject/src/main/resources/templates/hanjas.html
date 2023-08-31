@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8"/>
+		<title>한자 사자성어 목록</title>
+		<style>
+			table {
+				border: none;
+				width: 95%;
+				padding: 5px;
+				margin:auto;
+			}
+			.title{
+				
+				font-size: 18pt;
+				padding: 10px;
+				text-align: center;
+			}
+			.sub-title{
+				font-size: 10pt;
+				padding: 10px;
+				text-align: right;
+				border: none
+			}
+			th{
+			 	padding: 5px;
+			 	border: 1px solid gray;
+			 	background-color: moccasin;
+			}
+			
+			td{
+			 	padding: 5px;
+			 	border: 1px solid gray;
+			 	
+			}
+			
+			
+		</style>
+	</head>
+	<body>
+		<table>
+			<tr>
+				<td colspan="4" class="title">한자 사자성어 목록</td>
+			</tr>
+			<tr>
+				<td colspan="4" class="sub-title">
+					[[${#lists.size(list)}]]개
+				</td>
+			</tr>
+			<tr>
+				<th>레벨</th>
+				<th>한자</th>
+				<th>한글</th>
+				<th>성명</th>
+			</tr>
+			<tr th:each="vo : ${list}">
+				<td>[[${vo.l}]]</td>
+				<td>[[${vo.h}]]</td>
+				<td>[[${vo.k}]]</td>
+				<td style="font-size: 16px;">[[${vo.t}]]</td>
+			</tr>
+		</table>
+	</body>
+</html>

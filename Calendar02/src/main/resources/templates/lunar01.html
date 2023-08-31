@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+</head>
+
+<body>
+    <ul>
+        <li th:each="vo : ${list}">
+            [[${vo.getSolarMonth()}]]-[[${vo.getSolarDate()}]]
+            (
+            [[${vo.getLunarMonth()}]] - [[${vo.getLunarDate()}]]
+            ,
+            [[${vo.getGanjiMonthK()}]] - [[${vo.getGanjiDateK()}]]
+            )
+            :
+            [[${vo.getDayOfWeekS()}]] - [[${vo.getDayOfWeekN()}]]
+        </li>
+    </ul>
+
+</body>
+
+</html>

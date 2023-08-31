@@ -1,0 +1,19 @@
+<MyDataVO>
+  <string>foo</string>
+  <number>5</number>
+  <array>
+    <array>1</array>
+    <array>2</array>
+    <array>3</array>
+  </array>
+  <object>
+    <property>value</property>
+    <subobj>
+      <arr>
+        <arr>foo</arr>
+        <arr>ha</arr>
+      </arr>
+      <numero>1</numero>
+    </subobj>
+  </object>
+</MyDataVO>

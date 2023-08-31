@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>달력 만들기 예제 1</title>
+	<link rel="stylesheet" type="text/css" href="/axicon/axicon.min.css" />
+	<style>
+		table {
+			border: none;
+			padding: 10px;
+			margin: auto;
+			width: 1050px;
+		}
+
+		th {
+			padding: 5px;
+			border: 1px solid gray;
+			background-color: silver;
+			text-align: center;
+			font-weight: bold;
+			width: 150px;
+			border-radius: 50px;
+		}
+		td {
+			padding: 5px;
+			border: 1px solid gray;
+			text-align: right;
+			vertical-align: top;
+			font-weight: bold;
+			height: 80px;
+			border-radius: 20px;
+			font-size: 13pt;
+		}
+
+		.title {
+			font-size: 18pt;
+			text-align: center;
+			border: none;
+		}
+		/* 링크 모양 변경 */
+		a:link {text-decoration: none; color: black;}
+		a:hover {text-decoration: none; color: black;}
+		a:visited {text-decoration: none; color: black;}
+		a:active {text-decoration: none; color: black;}
+	</style>
+</head>
+
+<body>
+	<table>
+		<tr>
+			<td colspan="7" class="title">
+				<!-- 년월 감소 -->
+				<a th:href="@{/(year=${year-1},month=${month})}"><i class="axi axi-angle-double-left"></i></a>
+				<a th:href="@{/(year=${year},month=${month-1})}"><i class="axi axi-keyboard-arrow-left"></i></a>
+				[[${year}]]년 [[${#numbers.formatInteger(month,2)}]]월
+				<!-- 년월 증가 -->
+				<a th:href="@{/(year=${year},month=${month+1})}"><i class="axi axi-keyboard-arrow-right"></i></a>
+				<a th:href="@{/(year=${year+1},month=${month})}"><i class="axi axi-angle-double-right"></i></a>
+			</td>
+		</tr>
+		<tr>
+			<th style="color: red;background-color: pink;">일</th>
+			<th>월</th>
+			<th>화</th>
+			<th>수</th>
+			<th>목</th>
+			<th>금</th>
+			<th style="color: blue;background-color: skyblue;">토</th>
+		</tr>
+		<tr>
+			<!--/* 출력할 1일 요일이 일요일이 아니라면 */-->
+			<th:block th:if="${list[0].getDayOfWeekN() ne 0}">
+				<td th:each="n : ${#numbers.sequence(0,list[0].getDayOfWeekN()-1)}">
+					<!--/* 1일의 요일을 맞추기 위해 앞에 빈칸을 출력해준다. */-->
+					&nbsp;
+				</td>
+			</th:block>
+			<th:block th:each="d : ${list}">
+				<!--/* 날짜를 출력 */-->
+				
+				<td>
+					[[${d.getSolarDate()}]]
+					<br />
+					[[${d.getLunarMonth()}]]-[[${d.getLunarDate()}]]
+				</td>
+				
+				<!--/* 출력한 날짜가 토요일이면 줄바꿈 출력 */-->
+				<th:block th:if="${d.getDayOfWeekN()==6}">
+					[(${closeTR})]
+				</th:block>	
+			</th:block>
+			<!--/* 출력한 마지막 날짜의 요일이 토요일보다 적다면 */-->
+			<th:block th:if="${list[#lists.size(list)-1].getDayOfWeekN() lt 6}">
+				<td th:each="n : ${#numbers.sequence(list[#lists.size(list)-1].getDayOfWeekN()+1,6)}">
+					<!--/* 표의 끝을 맞추기 위해 뒤에 빈칸을 출력해준다. */-->
+					&nbsp;
+				</td>	
+			</th:block>		
+		</tr>
+	</table>
+</body>
+
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<!-- Thymeleaf를 사용하겠다. -->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+   <meta charset="UTF-8">
+   <title>메인페이지</title>
+   <link rel="stylesheet" href="/webjars/bootstrap/5.3.0/dist/css/bootstrap.min.css">
+   <script src="/webjars/jquery/3.6.4/jquery.min.js"></script>
+   <script src="/webjars/bootstrap/5.3.0/dist/js/bootstrap.min.js"></script>
+   <script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
+   <link rel="stylesheet" href="/css/style.css">
+   <style type="text/css">
+      *{
+         margin:0;
+         padding: 0;
+         box-sizing: border-box;
+      }
+      #info {
+         width: 90%;
+         padding: 10px;
+         margin: auto;
+         border: 1px solid gray;
+         margin-bottom: 10px;
+         font-size: 13pt;
+         border-radius: 20px;
+         color: black;
+      }
+
+      table {
+         width: 40%;
+         padding: 10px;
+         margin: auto;
+         border: none;
+         margin-bottom: 10px;
+      }
+
+      th {
+         border: 1px solid gray;
+         background-color: silver;
+         padding: 5px;
+         text-align: center;
+      }
+
+      td {
+         border: 1px solid gray;
+         padding: 5px;
+         text-align: left;
+      }
+   </style>
+</head>
+
+<body>
+   <div id="info">
+      <img src="/images/linux-icon.png" width="100" height="100" alt="귀여운 펭귄" />
+      <img src="/images/linux-icon2.png" width="100" height="100" alt="건방진 펭귄" />
+      <hr />
+      <a href="/" class="btn btn-sm btn-outline-success">홈으로</a>
+      |
+      <a href="/poll/list" class="btn btn-sm btn-outline-success">목록으로</a>
+   </div>
+   <table>
+      <tr>
+         <td style="font-size: 18pt;border: none;text-align: center;">
+            온라인 투표 결과보기
+         </td>
+      </tr>
+      <tr>
+         <th style="font-size: 13pt;text-align: left;">
+            [[${vo.subject}]]
+         </th>
+      </tr>
+      <tr>
+         <td style="text-align: right; font-weight: bold;">
+            총 투표수 : [[${vo.getTotalCounts()}]]표
+         </td>
+      </tr>
+      <tr>
+         <td>
+            <!--s.count로 적으면 1,2,3,4 순이고 s.index로 적으면 0,1,2,3 으로 시작됨-->
+            <!--p는 data, s는 index, count 항목정보 넘어옴-->
+            <th:block th:each="p,s : ${vo.getItems()}">
+               [[${s.count}]].
+               <strong>[[${p}]]</strong>
+               <span style="font-size: 9pt; font-style: italic;">
+               (
+                  [[${vo.getCounts().get(s.index)}]]표, 
+                  [[${#numbers.formatDecimal(vo.getCounts().get(s.index)*100.0/vo.getTotalCounts(),2,'POINT',2,'POINT')}]]%
+               )
+               </span>
+               <br />
+               <!--color 에서 %'숫자' 로하면 '숫자'인덱스만큼으로 제한되게 돌리는 것 -->
+               <hr size="15" th:width="${vo.getCounts().get(s.index)*100.0/vo.getTotalCounts()+'%'}" th:color="${color[s.index%6]}"/>
+            </th:block>
+            <div style="text-align: center;">
+               <input type="button" value="목록보기" th:onclick="location.href='/poll/list'"
+                  class="btn btn-sm btn-outline-success" />
+            </div>
+         </td>
+      </tr>
+   </table>
+</body>
+
+</html>

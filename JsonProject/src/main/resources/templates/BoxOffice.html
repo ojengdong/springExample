@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www/thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>일별 박스오피스</title>
+	<style>
+		table {
+			border: none;
+			width: 95%;
+			padding: 5px;
+			margin: auto;
+		}
+		.title{
+			font-size: 18pt;
+			padding: 10px;
+			text-align: center;
+			border: none;
+		}
+		.sub-title{
+			font-size: 10pt;
+			padding: 10px;
+			text-align: right;
+			border: none;
+		}
+		th{
+			padding: 5px; border: 1px solid gray;
+			background-color: moccasin;
+		}
+		td{
+			padding: 5px; border: 1px solid gray;
+		}
+	</style>
+	<script>
+		function getBoxOffice(obj){
+			let targetDt = obj.value;
+			// 날짜를 -로 구분하여 배열로 만들 후 배열을 ""으로 연결하여 하나의 문자열로 만든다.
+			targetDt = targetDt.split("-").join("");
+			// alert(targetDt);
+			location.href="?targetDt=" + targetDt;
+		}
+		
+	</script>
+</head>
+
+<body>
+	일자 선택 : <input type="date" id="date" onchange="getBoxOffice(this)">
+	<hr />
+	<table>
+		<tr>
+			<td colspan="3" class="title">
+				[[${result.boxofficeType}]]
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" class="sub-title">
+				[[${result.showRange}]]
+			</td>
+		</tr>
+		<tr>
+			<th>순위</th>
+			<th>영화제목</th>
+			<th>개봉일</th>
+		</tr>
+		<tr th:each="m : ${result.dailyBoxOfficeList}">
+			<td>[[${m.rank}]]</td>
+			<td>[[${m.movieNm}]]</td>
+			<td>[[${m.openDt}]]</td>
+		</tr>
+	</table>
+</body>
+
+</html>

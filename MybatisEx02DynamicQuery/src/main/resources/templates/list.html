@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<!-- Thymeleaf를 사용하겠다. -->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>메인페이지</title>
+<link rel="stylesheet" href="/webjars/bootstrap/5.3.0/css/bootstrap.min.css">
+<script src="/webjars/jquery/3.6.4/jquery.min.js"></script>
+<script src="/webjars/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+<script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
+<link rel="stylesheet" href="/css/style.css">
+<style type="text/css">
+#info {
+	width: 90%;
+	padding: 10px;
+	margin: auto;
+	border: 1px solid gray;
+	margin-bottom: 10px;
+	font-size: 18pt;
+	border-radius: 20px;
+	color: black;
+}
+table{
+	width: 90%;
+	padding: 10px;
+	margin: auto;
+	border: none;
+	margin-bottom: 10px;
+}
+th{
+	border: 1px solid gray; background-color: silver; padding: 5px; text-align: center;
+}
+td{
+	border: 1px solid gray; padding: 5px; text-align: center;
+}
+</style>
+<script type="text/javascript">
+	function changeList(){
+		// alert('선택한 값 : ' + obj.value);
+		let no = document.querySelector("#deptNo").value;
+		let job = document.querySelector("#job").value;
+		// alert(no + "\n" + job);
+		location.href = '?no=' + no + "&job=" + job;
+	}
+</script>
+</head>
+<body>
+	<div id="info">
+		<img src="/images/linux-icon.png" width="100" height="100" alt="귀여운 펭귄" />
+		<img src="/images/linux-icon2.png" width="100" height="100" alt="건방진 펭귄" />
+		<hr />
+		<a href="/"  class="btn btn-sm btn-outline-success">홈으로</a>
+	</div>
+	<table>
+		<tr>
+			<td colspan="5" style="text-align: center;border: none;font-size: 18pt;">
+				사원 목록
+			</td>
+		</tr>
+		<tr>
+			<td colspan="5" style="text-align: right;border: none;">
+				직업 :
+				<select name="job" id="job" onchange="changeList()">
+					<option th:selected="${job==null}" value="">전체</option>
+					<option th:each="d : ${jobs}" th:value="${d}" th:selected="${job}==${d}">[[${d}]]</option>
+				</select>
+				부서 : 
+				<select name="deptNo" id="deptNo" onchange="changeList()">
+					<option th:selected="${no==null}" value="">전체</option>
+					<option th:each="d : ${dept}" th:value="${d}" th:selected="${no}==${d}">[[${d}]]번 부서</option>
+				</select>
+				전체 : [[${#lists.size(list)}]]명
+			</td>
+		</tr>
+		<tr>
+			<th>사번</th>
+			<th>이름</th>
+			<th>연봉</th>
+			<th>부서번호</th>
+			<th>직업</th>
+		</tr>
+		<tr th:each="vo : ${list}">
+			<td>[[${vo.id}]]</td>
+			<td>[[${vo.name}]]</td>
+			<td>[[${#numbers.formatCurrency(vo.sal)}]]만원</td>
+			<td>[[${vo.dept}]]</td>
+			<td>[[${vo.job}]]</td>
+		</tr>
+	</table>
+</body>
+</html>

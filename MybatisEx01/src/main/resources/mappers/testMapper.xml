@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <!-- namespace는 반드시 DAO인터페이스와 이름이 일치해야 한다. -->
+<mapper namespace="kr.kdata.mybatis.dao.TestDAO">
+	<!-- 매퍼파일에 태그 1개당 DAO인터페이스의 메서드 1개를 만든다. -->
+	<!-- SQL명령 1개당 태그 1개씩을 추가한다. -->
+	
+	<!-- 현재 날짜를 String으로 받기 -->
+	<select id="selectNowString" resultType="string">
+		select sysdate from dual
+	</select>
+
+	<!-- 현재 날짜를 Date로 받기 -->
+	<select id="selectNowDate" resultType="java.util.Date">
+		select sysdate from dual
+	</select>
+	
+	<!-- 정수 한개를 가져와 두배를 리턴한다. -->
+	<select id="selectDouble" parameterType="int" resultType="int">
+		select  #{num}*2 from dual
+	</select>
+	
+	<!-- 2개 이상을 받으려면 어떻게 해야 할까? : HashMap으로 처리 -->
+	<select id="selectMul" parameterType="hashmap" resultType="int">
+		select  #{num1} * #{num2} from dual
+	</select>	
+	<!-- 리턴 받는게 여러개라면  어떻게 해야 할까?  -->
+	<select id="selectSumMul" parameterType="hashmap" resultType="hashmap">
+		select  #{num1} * #{num2} m, #{num1}+#{num2} s, sysdate as today from dual
+	</select>		
+	
+	<!-- 받는것도 여러개 리턴도 여러개라면 어떻게 해야 할까? -->
+	<select id="selectSumMul2" parameterType="TestVO" resultType="TestVO">
+		select  #{num1} num1 , #{num2} num2, #{num1}*#{num2} mul, #{num1}+#{num2} sum, sysdate as today from dual
+	</select>
+	
+	
+</mapper>

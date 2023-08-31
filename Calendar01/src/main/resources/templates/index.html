@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<title>달력 만들기 예제 1</title>
+</head>
+<body>
+	<h2>서버시간 : [[${serverTime}]]</h2>
+	<h2>서버시간 : [[${#dates.format(serverTime,'yy-MM-dd hh:mm:ss')}]]</h2>
+
+	<a th:href="@{/ex01/{year}/{month}(year=${year},month=${month})}">첫번째 예제</a>	
+
+</body>
+</html>
