@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <!-- namespace는 반드시 DAO인터페이스와 이름이 일치해야 한다. -->
+<mapper namespace="kr.kdata.board.dao.BoardDAO">
+	<!-- 매퍼파일에 태그 1개당 DAO인터페이스의 메서드 1개를 만든다. -->
+	<!-- SQL명령 1개당 태그 1개씩을 추가한다. -->
+
+	<!-- 1. 전체 개수 얻기 : 페이징 -->
+	<select id="selectCount" resultType="int">
+		select count(*) from board
+	</select>
+	<!-- 2. 1개 얻기 : 내용보기/수정/삭제 -->
+	<select id="selectById" parameterType="int" resultType="BoardVO">
+		select * from board where id=#{id}
+	</select>
+	<!-- 3. 1페이지 얻기 : 목록보기 -->
+	<select id="selectList" parameterType="hashmap" resultType="BoardVO">
+		select
+			Q.*
+		from
+			(select 
+				rownum rnum, R.*
+			from
+				(select * from board order by id desc) R  -- 먼저 글을 번호 역순으로 가져오고
+			where
+				<![CDATA[
+					rownum <= #{endNo} -- 뒷자리 잘라내고
+				]]>
+			) Q
+		where
+			<![CDATA[
+			rnum >= #{startNo} -- 앞자리 잘라내고
+			]]>		
+	</select>
+	<!-- 4. 저장하기 -->
+	<insert id="insert" parameterType="BoardVO">
+		insert into 
+			board 
+		values 
+			(board_id_seq.nextval,#{name},#{password},#{subject},#{content},sysdate)
+	</insert>
+	<!-- 5. 수정하기 -->
+	<update id="update" parameterType="BoardVO">
+		update 
+			board
+		set
+			subject=#{subject}, content=#{content}, regDate=sysdate
+		where
+			id=#{id}
+	</update>
+	<!-- 6. 삭제하기 -->
+	<delete id="delete" parameterType="int">
+		delete from board where id=#{id}
+	</delete>
+</mapper>
+
+
+
+
+
+
+

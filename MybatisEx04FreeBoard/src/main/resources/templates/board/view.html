@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<title>글 내용보기</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="/webjars/bootstrap/5.3.0/dist/css/bootstrap.min.css">
+	<script src="/webjars/jquery/3.6.4/dist/jquery.min.js"></script>
+	<script src="/webjars/bootstrap/5.3.0/dist/js/bootstrap.min.js"></script>
+	<script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
+	<style>
+		.comment {
+			border: 1px solid gray;
+			padding : 5px;
+			margin: 5px;
+			border-radius: 20px;	
+			padding-left: 20px;		
+		}
+		.comment_title {
+			border: 1px solid gray;
+			background-color: silver;
+			border: silver;
+			padding : 5px;
+			border-radius: 20px;	
+			padding-left: 20px;			
+		}
+	</style>
+	<script>
+		$(function(){
+			// 취소 버튼을 보이지 않게 한다.
+			$("#resetBtn").css('display','none'); 
+			// submitBtn을 클릭하면
+			$("#submitBtn").click(function(){
+				//alert($(this).val());
+				let buttobTile=$(this).val();
+				if(buttobTile=="댓글 저장"){
+					// 입력 내용 얻기
+					let ref = $("#ref").val();
+					let name = $("#name").val();
+					let password = $("#password").val();
+					let content = $("#content").val();
+					// alert(name + "\n" + password + "\n" + content); // 읽어왔는지 확인
+					let form = new FormData(); // 폼을 만든다.
+					// 폼에 내용을 추가한다.
+					form.append("name", name);
+					form.append("password", password);
+					form.append("content", content);
+					form.append("ref", ref);
+					
+					// Ajax를 통해 데이터를 서버로 보내 저장을 수행한다.
+					axios.post('/board/commentInsert', form)
+					  .then(function (response) { // 성공 했을떄
+					    	// alert("성공!!! : " + JSON.stringify(response));
+					    	location.reload();
+					  })
+					  .catch(function (error) { // 에러 발생했을때
+					    	alert("에러발생!! : " + error);
+					  })
+					  .finally(function () { // 항상 실행되는 영역
+  					  	
+  					  });
+					
+				}else if(buttobTile=="댓글 수정"){
+					// 입력 내용 얻기
+					let id = $("#id").val();
+					let password = $("#password").val();
+					let content = $("#content").val();
+					let form = new FormData(); // 폼을 만든다.
+					// 폼에 내용을 추가한다.
+					form.append("id", id);
+					form.append("password", password);
+					form.append("content", content);
+					
+					// Ajax를 통해 데이터를 서버로 보내 저장을 수행한다.
+					axios.put('/board/commentUpdate', form)
+					  .then(function (response) { // 성공 했을떄
+					    	// alert("성공!!! : " + JSON.stringify(response));
+					    	location.reload();
+					  })
+					  .catch(function (error) { // 에러 발생했을때
+					    	alert("에러발생!! : " + error);
+					  })
+					  .finally(function () { // 항상 실행되는 영역
+  					  	
+  					  });
+					
+				}else if(buttobTile=="댓글 삭제"){
+					// 입력 내용 얻기
+					let id = $("#id").val();
+					let password = $("#password").val();
+					
+					// Ajax를 통해 데이터를 서버로 보내 저장을 수행한다.
+					axios.delete('/board/commentDelete?id=' + id + "&password=" + password)
+					  .then(function (response) { // 성공 했을떄
+					    	// alert("성공!!! : " + JSON.stringify(response));
+					    	location.reload();
+					  })
+					  .catch(function (error) { // 에러 발생했을때
+					    	alert("에러발생!! : " + error);
+					  })
+					  .finally(function () { // 항상 실행되는 영역
+  					  	
+  					  });					
+				}
+			});			
+			
+			// 취소 버튼 누르면
+			$("#resetBtn").click(function(){
+				$("#submitBtn").val("댓글 저장");
+				$("#id").val('0');
+				$("#name").val('');
+				$("#password").val('');
+				$("#content").val('');
+				$("#resetBtn").css('display','none');
+			});
+			
+		});
+		// 수정 버튼 누르면
+		function updateForm(id, name){
+			// 취소 버튼을 보이게 한다.
+			$("#resetBtn").css('display','inline');
+			$("#submitBtn").val("댓글 수정");
+			$("#id").val(id);
+			$("#name").val(name);
+			$("#content").val($("#content"+id).html());
+			$("#password").focus(); 
+		}
+		// 삭제버튼 누르면
+		function deleteForm(id, name){
+			// 취소 버튼을 보이게 한다.
+			$("#resetBtn").css('display','inline');
+			$("#submitBtn").val("댓글 삭제");
+			$("#id").val(id);
+			$("#name").val(name);
+			$("#content").val($("#content"+id).html());
+			$("#password").focus(); 
+		}
+		
+	</script>	
+</head>
+<body>
+	<div class="p-2 mb-5 text-center bg-light">
+        <h2 class="mb-3">나의 자유게시판 - 내용보기</h2>
+    </div>
+    <div class="container">
+			<input type="text" class="form-control" style="margin-bottom: 3px;" th:value="${vo.name}" readonly>	 
+			<input type="text" class="form-control" style="margin-bottom: 3px;" th:value="${#dates.format(vo.regDate,'yyyy년 MM월 dd일(EEEE) hh:mm:ss에 작성됨')}" readonly >	 
+			<input type="text" class="form-control" style="margin-bottom: 3px;" th:value="${vo.subject}" readonly>
+			<section class="mb-5">
+			<textarea class="form-control h-25" rows="10">[[${vo.content}]]</textarea>
+			</section>
+			<section style="text-align: right;">
+				<input type="button" value="수정하기" class="btn btn-sm btn-outline-success" th:onclick="|location.href='@{update(id=${vo.id},p=${cv.p},s=${cv.s},b=${cv.b})}'|"/>
+				<input type="button" value="삭제하기" class="btn btn-sm btn-outline-success" th:onclick="|location.href='@{delete(id=${vo.id},p=${cv.p},s=${cv.s},b=${cv.b})}'|"/>
+				<input type="button" value="목록으로" class="btn btn-sm btn-outline-success" th:onclick="|location.href='@{list(p=${cv.p},s=${cv.s},b=${cv.b})}'|"/>
+			</section>
+			<section style="margin-top: 10px;">
+				<!-- 여기에 댓글 폼 -->
+				<div style="margin-bottom: 3px;">
+					<input type="hidden" id="id" value="0" class="form-control" style="margin-bottom: 3px;"/>
+					<input type="hidden" id="ref" th:value="${vo.id}" class="form-control" style="margin-bottom: 3px;"/>
+					<div class="row g-3 align-items-center">
+						  <div class="col-auto">
+							<input type="text" id="name" class="form-control form-control-sm" style="margin-bottom: 3px;" required placeholder="이름"/>
+						  </div>
+						  <div class="col-auto">
+							<input type="password" id="password" class="form-control form-control-sm" style="margin-bottom: 3px;"  required placeholder="비밀번호"/>
+						  </div>
+					</div>
+					<textarea rows="3" id="content" class="form-control form-control-sm" style="margin-bottom: 3px;"  required placeholder="댓글내용"></textarea>
+					<div style="text-align: right;">
+						<input type="button" id="submitBtn" value="댓글 저장" class="btn btn-sm btn-outline-success"/>
+						<input type="button" id="resetBtn" value="취소" class="btn btn-sm btn-outline-success"/>
+					</div>
+				</div>
+				<!-- 여기에 댓글 목록 -->
+				<th:block th:if="${#lists.size(vo.commentList)==0}">
+					<div style="border: 1px solid gray; padding:5px;text-align: center;">
+						등록된 댓글이 없습니다.
+					</div>
+				</th:block>								
+				<th:block th:if="${#lists.size(vo.commentList)>0}">
+					<div th:each="c : ${vo.commentList}" class="comment">
+						<div class="comment_title">
+							<b>[[${c.name}]]</b>님이
+							[[${#dates.format(c.regDate,'yyyy년 MM월 dd일(EEEE) hh:mm:ss에 남긴글')}]]
+							
+							<button th:onclick="updateForm([[${c.id}]],'[(${c.name})]')" class="btn btn-sm btn-outline-danger">수정</button>
+							<button th:onclick="deleteForm([[${c.id}]],'[(${c.name})]')" class="btn btn-sm btn-outline-danger">삭제</button>
+						</div>
+						<div style="display: none;" th:id="|content${c.id}|">[[${c.content}]]</div>
+						[(${#strings.replace(c.content,newLine,br)})]
+					</div>
+				</th:block>								
+			</section>		 
+	</div>  
+	              
+</body>
+</html>

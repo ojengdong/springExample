@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<title>새글 등록하기</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+	<style>
+
+	</style>
+	<script>
+		function formCheck(){
+			let value = $("#name").val(); // 이름 얻고
+			if(value==null || value.trim().length==0){ // 없거나 빈칸들로만  입력되었다면
+				alert('이름은 반드시 입력해야 합니다.'); // 경고
+				 $("#name").val(""); // 입력값 삭제
+				 $("#name").focus(); // 커서 위치
+				 return false;   // 전송 취소
+			}
+			value = $("#password").val(); // 비번 얻고
+			if(value==null || value.trim().length==0){ // 없거나 빈칸들로만  입력되었다면
+				alert('비밀번호는 반드시 입력해야 합니다.'); // 경고
+				 $("#password").val(""); // 입력값 삭제
+				 $("#password").focus(); // 커서 위치
+				 return false;   // 전송 취소
+			}
+			value = $("#subject").val(); // 제목 얻고
+			if(value==null || value.trim().length==0){ // 없거나 빈칸들로만  입력되었다면
+				alert('제목은 반드시 입력해야 합니다.'); // 경고
+				 $("#subject").val(""); // 입력값 삭제
+				 $("#subject").focus(); // 커서 위치
+				 return false;   // 전송 취소
+			}
+			value = $("#content").val(); // 내용 얻고
+			if(value==null || value.trim().length==0){ // 없거나 빈칸들로만  입력되었다면
+				alert('내용은 반드시 입력해야 합니다.'); // 경고
+				 $("#content").val(""); // 입력값 삭제
+				 $("#content").focus(); // 커서 위치
+				 return false;   // 전송 취소
+			}
+			return true;
+		}
+	</script>	
+</head>
+<body>
+	<div class="p-2 mb-5 text-center bg-light">
+        <h2 class="mb-3">자유게시판 - 글쓰기</h2>
+    </div>
+    <div class="container">
+		<!-- 
+			onsubmit="return formCheck()" : 전송시 formCheck() 함수를 먼저 실행해라. 
+		 	true값이 리턴 될때만 폼전송이 이루어 진다.  
+		 -->
+ 		<form action="insertOk" method="post" onsubmit="return formCheck()">
+			<input type="hidden" name="p" th:value="${cv.p}">	 
+			<input type="hidden" name="s" th:value="${cv.s}">	 
+			<input type="hidden" name="b" th:value="${cv.b}">	 
+			<input type="text" name="name" class="form-control" placeholder="이름" id="name" required style="margin-bottom: 3px;">	 
+			<input type="password" name="password" class="form-control" placeholder="비밀번호" id="password" required style="margin-bottom: 3px;">	 
+			<input type="text" name="subject" class="form-control" placeholder="제목" id="subject" required style="margin-bottom: 3px;">
+			<section class="mb-5">
+			<textarea class="form-control h-25" rows="10" placeholder="내용" required id="content" name="content"></textarea>
+			</section>
+			<section style="text-align: right;">
+				<input type="submit" value="저장하기" class="btn btn-sm btn-outline-success"/>
+				<input type="button" value="목록으로" class="btn btn-sm btn-outline-success" th:onclick="|location.href='@{list(p=${cv.p},b=${cv.b},s=${cv.s})}'|"/>
+			</section>		 
+		</form>
+	</div>                
+</body>
+</html>

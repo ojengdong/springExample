@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<!-- Thymeleaf를 사용하겠다. -->
+<html lang="ko" xmlns="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>메인페이지</title>
+<link rel="stylesheet" href="/webjars/bootstrap/5.3.0/dist/css/bootstrap.min.css">
+<script src="/webjars/jquery/3.6.4/dist/jquery.min.js"></script>
+<script src="/webjars/bootstrap/5.3.0/dist/js/bootstrap.min.js"></script>
+<script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
+<link rel="stylesheet" href="/css/style.css">
+<style type="text/css">
+#info {
+	width: 90%;
+	padding: 10px;
+	margin: auto;
+	border: 1px solid gray;
+	margin-bottom: 10px;
+	font-size: 13pt;
+	border-radius: 20px;
+	color: black;
+}
+</style>
+</head>
+<body>
+	<div id="info">
+		<h2>메인화면 입니다.</h2>
+		<h2>서버 시간 : [[${#dates.format(serverTime,'yy-MM-dd(E) HH:mm:ss')}]]</h2>
+		<h2>DB 서버 시간 : [[${#dates.format(dbTime,'yy-MM-dd(E) HH:mm:ss')}]]</h2>
+		<hr />
+		<img src="/images/linux-icon.png" width="100" height="100" alt="귀여운 펭귄" />
+		<img src="/images/linux-icon2.png" width="100" height="100" alt="건방진 펭귄" />
+		<hr />
+		<a href="/"  class="btn btn-sm btn-outline-success">Home</a>
+		<a href="/board/"  class="btn btn-sm btn-outline-success">게시판보기</a>
+	</div>
+</body>
+</html>
