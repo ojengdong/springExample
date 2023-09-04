@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<title>새글 등록하기</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="/webjars/bootstrap/5.3.0/dist/css/bootstrap.min.css">
+	<script src="/webjars/jquery/3.6.4/dist/jquery.min.js"></script>
+	<script src="/webjars/bootstrap/5.3.0/dist/js/bootstrap.min.js"></script>
+	<script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
+	<link rel="stylesheet" href="/css/style.css">
+	<style>
+
+	</style>
+	<script>
+		$(function(){
+			let maxItem = 5, minItem = 1, currentItem = 1; // 최대개수,최소개수,현재개수
+			// id가 appendBtn인 버튼을 클릭하면 실행해라.
+			$("#appendBtn").click(function(){
+				if(maxItem==currentItem){
+					alert("최대 " + maxItem + "개까지만 추가가 가능합니다.");
+					return;
+				}
+				// 버튼을 추가하는 코드 추가~~~~
+				currentItem++; // 현재번호 증가
+				let divTag = $("<div style='margin:5px;'></div>"); // 태그 만들기
+				divTag.attr("id","box"+currentItem);// 태그에 속성추가
+				// 태그안 다른 태그 삽입
+				divTag.append($("<input type='file' id='file"+currentItem+"' name='uploadFile'/>"));
+				// 만들어진 div태그에 id가 itemBox인 곳에 추가
+				$("#fileBox").append(divTag);				
+			});
+			// id가 removeBtn인 버튼을 클릭하면 실행해라.
+			$("#removeBtn").click(function(){
+				if(minItem==currentItem){
+					alert("최소 " + minItem + "개의 항목은 있어야 합니다.");
+					return;
+				}
+				// 마지막 입력항목 삭제한다.
+				$("#box"+currentItem).remove(); // 찾아서 지워라
+				currentItem--; // 개수 1개 감소
+			});
+		});
+		
+		function formCheck(){
+			let value = $("#name").val(); // 이름 얻고
+			if(value==null || value.trim().length==0){ // 없거나 빈칸들로만  입력되었다면
+				alert('이름은 반드시 입력해야 합니다.'); // 경고
+				 $("#name").val(""); // 입력값 삭제
+				 $("#name").focus(); // 커서 위치
+				 return false;   // 전송 취소
+			}
+			value = $("#password").val(); // 비번 얻고
+			if(value==null || value.trim().length==0){ // 없거나 빈칸들로만  입력되었다면
+				alert('비밀번호는 반드시 입력해야 합니다.'); // 경고
+				 $("#password").val(""); // 입력값 삭제
+				 $("#password").focus(); // 커서 위치
+				 return false;   // 전송 취소
+			}
+			value = $("#subject").val(); // 제목 얻고
+			if(value==null || value.trim().length==0){ // 없거나 빈칸들로만  입력되었다면
+				alert('제목은 반드시 입력해야 합니다.'); // 경고
+				 $("#subject").val(""); // 입력값 삭제
+				 $("#subject").focus(); // 커서 위치
+				 return false;   // 전송 취소
+			}
+			value = $("#content").val(); // 내용 얻고
+			if(value==null || value.trim().length==0){ // 없거나 빈칸들로만  입력되었다면
+				alert('내용은 반드시 입력해야 합니다.'); // 경고
+				 $("#content").val(""); // 입력값 삭제
+				 $("#content").focus(); // 커서 위치
+				 return false;   // 전송 취소
+			}
+			return true;
+		}
+	</script>	
+</head>
+<body>
+	<div class="p-2 mb-5 text-center bg-light">
+        <h2 class="mb-3">자료실 - 글쓰기</h2>
+    </div>
+    <div class="container">
+		<!-- 
+			onsubmit="return formCheck()" : 전송시 formCheck() 함수를 먼저 실행해라. 
+		 	true값이 리턴 될때만 폼전송이 이루어 진다.  
+		 -->
+ 		<form action="insertOk" method="post" onsubmit="return formCheck()" enctype="multipart/form-data">
+			<input type="hidden" name="p" th:value="${cv.p}">	 
+			<input type="hidden" name="s" th:value="${cv.s}">	 
+			<input type="hidden" name="b" th:value="${cv.b}">	 
+			<input type="text" name="name" class="form-control" placeholder="이름" id="name" required style="margin-bottom: 3px;">	 
+			<input type="password" name="password" class="form-control" placeholder="비밀번호" id="password" required style="margin-bottom: 3px;">	 
+			<input type="text" name="subject" class="form-control" placeholder="제목" id="subject" required style="margin-bottom: 3px;">
+			<section class="mb-5">
+			<textarea class="form-control h-25" rows="6" placeholder="내용" required id="content" name="content"></textarea>
+			<!-- 첨부파일 -->
+			<div style="margin: 10px;">
+				파일 첨부
+				<input type="button" value="  +  " id="appendBtn"  class="btn btn-sm btn-outline-danger"/>
+				<input type="button" value="  -  " id="removeBtn"  class="btn btn-sm btn-outline-danger"/>
+			</div>
+			<div id="fileBox" style="margin: 5px;">
+				<div id="box1" style="margin: 5px;">
+					<input type="file" id="file1" name="uploadFile" />
+				</div>
+			</div>
+			</section>
+			<section style="text-align: right;">
+				<input type="submit" value="저장하기" class="btn btn-sm btn-outline-success"/>
+				<input type="button" value="목록으로" class="btn btn-sm btn-outline-success" th:onclick="|location.href='@{list(p=${cv.p},b=${cv.b},s=${cv.s})}'|"/>
+			</section>		 
+		</form>
+	</div>                
+</body>
+</html>

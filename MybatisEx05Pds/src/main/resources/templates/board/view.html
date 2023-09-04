@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<title>글 내용보기</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="/webjars/bootstrap/5.3.0/dist/css/bootstrap.min.css">
+	<script src="/webjars/jquery/3.6.4/dist/jquery.min.js"></script>
+	<script src="/webjars/bootstrap/5.3.0/dist/js/bootstrap.min.js"></script>
+	<script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
+	<style>
+		.comment {
+			border: 1px solid gray;
+			padding : 5px;
+			margin: 5px;
+			border-radius: 20px;	
+			padding-left: 20px;		
+		}
+		.comment_title {
+			border: 1px solid gray;
+			background-color: silver;
+			border: silver;
+			padding : 5px;
+			border-radius: 20px;	
+			padding-left: 20px;			
+		}
+	</style>
+	<script>
+		$(function(){
+			
+			
+		});
+	</script>	
+</head>
+<body>
+	<div class="p-2 mb-5 text-center bg-light">
+        <h2 class="mb-3">자료실 - 내용보기</h2>
+    </div>
+    <div class="container">
+			<input type="text" class="form-control" style="margin-bottom: 3px;" th:value="|작성자 : ${vo.name}|" readonly>	 
+			<input type="text" class="form-control" style="margin-bottom: 3px;" th:value="|작성일 : ${#dates.format(vo.regDate,'yyyy년 MM월 dd일(EEEE) hh:mm:ss에 작성됨')}|" readonly >	 
+			<input type="text" class="form-control" style="margin-bottom: 3px;" th:value="|IP : ${vo.ip}|" readonly >	 
+			<input type="text" class="form-control" style="margin-bottom: 3px;" th:value="|조회수 : ${vo.readCount + '회'}|" readonly >	 
+			<input type="text" class="form-control" style="margin-bottom: 3px;" th:value="|제목 : ${vo.subject}|" readonly>
+			<section class="mb-5">
+			<textarea class="form-control h-25" rows="10">[[${vo.content}]]</textarea>
+			</section>
+			<section style="text-align: right;">
+				<input type="button" value="수정하기" class="btn btn-sm btn-outline-success" th:onclick="|location.href='@{update(id=${vo.id},p=${cv.p},s=${cv.s},b=${cv.b})}'|"/>
+				<input type="button" value="삭제하기" class="btn btn-sm btn-outline-success" th:onclick="|location.href='@{delete(id=${vo.id},p=${cv.p},s=${cv.s},b=${cv.b})}'|"/>
+				<input type="button" value="목록으로" class="btn btn-sm btn-outline-success" th:onclick="|location.href='@{list(p=${cv.p},s=${cv.s},b=${cv.b})}'|"/>
+			</section>
+			<fieldset style="margin-top: 10px;" th:if="${vo.fileList}">
+				<!--/* 첨부파일이 있으면 첨부 파일을 출력하자 */-->
+				<legend>첨부파일</legend>
+				<div th:each="f : ${vo.fileList}">
+					<a th:href="|@{download(uuid=${f.uuid},fileName=${f.fileName})}|" >[[${f.fileName}]]</a> 			
+				</div>
+			</fieldset>		 
+	</div>  
+	              
+</body>
+</html>

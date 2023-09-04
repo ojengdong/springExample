@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<title>글목록 보기</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="/webjars/bootstrap/5.3.0/dist/css/bootstrap.min.css">
+	<script src="/webjars/jquery/3.6.4/dist/jquery.min.js"></script>
+	<script src="/webjars/bootstrap/5.3.0/dist/js/bootstrap.min.js"></script>
+	<script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
+	<link rel="stylesheet" href="/css/style.css">
+	<style>
+		table {
+			width: 100%; border: none; padding: 5px;
+		}
+		th {
+			border: 1px solid gray; padding: 5px; background-color: silver;
+			text-align: center;
+		}
+		td {
+			border: 1px solid gray; padding: 5px;  text-align: center;
+		}
+		a:link { text-decoration: none; color: black;} /* 링크 */
+		a:hover { text-decoration: none; color: black; font-weight: bolder;} /* 마우스 올라왔을떄 */
+		a:active { text-decoration: none; color: black;} /* 클릭했을때 */
+		a:visited { text-decoration: none; color: black;} /* 방문 했던곳 */
+	</style>
+	<script>
+		function setCount(){
+			//alert(document.querySelector("#cnt").value);
+			let size = document.querySelector("#cnt").value;
+			let p = [(${pv.currentPage})];
+			let s = size;
+			let b = [(${pv.sizeOfBlock})];
+			location.href = "?p=" + p + "&s=" + s + "&b=" + b;
+		}
+	</script>	
+</head>
+<body>
+	<div class="p-2 mb-5 text-center bg-light">
+        <h2 class="mb-3">나의 자료실</h2>
+    </div>
+    <div class="container">
+ 		<table>
+			 <tr>
+				 <td colspan="6" style="text-align: right; border: none;">
+					 [[${pv.getPageInfo()}]]
+					 <select id="cnt" onchange="setCount()">
+						 <option value="5" th:selected="${pv.sizeOfPage==5}"> 5개씩 보기</option>
+						 <option value="10" th:selected="${pv.sizeOfPage==10}">10개씩 보기</option>
+						 <option value="20" th:selected="${pv.sizeOfPage==20}">20개씩 보기</option>
+						 <option value="50" th:selected="${pv.sizeOfPage==50}">50개씩 보기</option>
+					 </select>					 
+				 </td>
+			 </tr>
+			 <tr>
+				 <th>번호</th>
+				 <th>작성자</th>
+				 <th style="width: 60%;">제목</th>
+				 <th>작성일</th>
+				 <th>ip</th>
+				 <th>조회수</th>
+			 </tr>
+			 <!-- 글이 있다면 반복문으로 출력 -->
+			 <th:block th:if="${pv.totalCount gt 0}">
+				 <tr th:each="vo, vs : ${pv.list}" 
+				 	onmouseover="this.style.backgroundColor='pink'"
+				 	onmouseout="this.style.backgroundColor='white'">
+				 	<!-- 
+						 글 번호에 아이디를 출력하지 않고 글번호는 계산해서 출력하자
+						 시작번호 = 전체개수 - (현재페이지 -1) * 페이지당 글수
+						 글번호 = 시작번호 - 반복횟수
+						 반복문에 변수 2개를 쓰면 첫번째 변수는 값이고, 두번째 변수는 상태값이다.
+					-->
+					 <td>[[${pv.totalCount-(pv.currentPage-1) * pv.sizeOfPage - vs.index}]]</td>
+					 <td>[[${vo.name}]]</td>
+					 <td style="text-align: left;">
+						<a th:href="@{/pds/view?id={id}(id=${vo.id},p=${pv.currentPage},s=${pv.sizeOfPage},b=${pv.sizeOfBlock},mode=1)}">[[${vo.subject}]]</a>
+						<!--/* 첨부 파일이 있다면 */-->
+						<span th:if="${#lists.size(vo.fileList) gt 0}" style="font-size: 9pt; font-weight: bold;">
+							- ([[${#lists.size(vo.fileList)}]]개 파일)
+						</span>
+					 </td>
+					 <td>[[${#dates.format(vo.regDate,'MM-dd hh:mm')}]]</td>
+					 <td>[[${vo.ip}]]</td>
+					 <td>[[${vo.readCount}]]</td>
+				 </tr>
+			 </th:block>
+			 <!-- 글이 없다면 반복문으로 출력 -->
+			 <th:block th:if="${pv.totalCount eq 0}">
+				 <tr>
+					 <td colspan="6" style="text-align: center;">등록된 글이 없습니다.</td>
+				 </tr>
+			 </th:block>	 
+			 <tr>
+				 <td colspan="6" style="text-align: right; border: none;">
+					 <button class="btn btn-sm btn-outline-success" th:onclick="|location.href='@{insert(p=${cv.p},b=${cv.b},s=${cv.s})}'|">새글쓰기</button>
+				 </td>
+			 </tr>
+			 <tr>
+				 <td colspan="6" style="text-align: right; border: none;">
+					 [(${pv.getPageList2()})]
+				 </td>
+			 </tr>
+		 </table>
+	</div>                
+</body>
+</html>
