@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<!-- Thymeleaf를 사용하겠다. -->
+<html lang="ko" xmlns="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>카카오 우편번호 사용하기</title>
+	<link rel="stylesheet" href="/webjars/bootstrap/5.3.0/dist/css/bootstrap.min.css">
+	<script src="/webjars/jquery/3.6.4/dist/jquery.min.js"></script>
+	<script src="/webjars/bootstrap/5.3.0/dist/js/bootstrap.min.js"></script>
+	<script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
+	<link rel="stylesheet" href="/css/style.css">
+	<style type="text/css">
+		#info {
+			width: 90%;
+			padding: 10px;
+			margin: auto;
+			border: 1px solid gray;
+			margin-bottom: 10px;
+			font-size: 13pt;
+			border-radius: 20px;
+			color: black;
+		}
+	</style>
+	<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+	<script>
+		function zipFinder() {
+			new daum.Postcode({
+				oncomplete: function (data) {
+					// 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분입니다.
+					// 예제를 참고하여 다양한 활용법을 확인해 보세요.
+					document.querySelector("#zipcode").value = data.zonecode;
+					document.querySelector("#addr1").value = data.roadAddress;
+					//document.querySelector("#addr1").value = data.jibunAddress;
+					//document.querySelector("#zipcode").focus();
+					document.querySelector("#addr1").focus();
+			}
+			}).open();
+		}
+
+
+	</script>
+</head>
+
+<body>
+   <div id="info">
+      <h2>카카오 우편번호 사용하기</h2>
+      <hr />
+      <img src="/images/linux-icon.png" width="100" height="100" alt="귀여운 펭귄" />
+      <img src="/images/linux-icon2.png" width="100" height="100" alt="건방진 펭귄" />
+      <hr />
+      <a href="/" class="btn btn-sm btn-outline-success">Home</a>
+      <h2>카카오우편번호 사용하기</h2>
+      <input type="text" readonly id="zipcode" required/>
+      <button onclick="zipFinder()">우편번호 검색</button>
+      <br/>
+      <input type="text" id="addr1" size="40"/><br/>
+      <input type="text" id="addr2" size="40" placeholder="상세주소"/><br/>
+   </div>
+</body>
+
+</html>

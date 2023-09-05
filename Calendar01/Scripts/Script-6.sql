@@ -22,3 +22,6 @@ CREATE TABLE board2file (
 	fileName varchar2(200) NOT NULL,
 	contentType varchar2(200) NOT NULL
 );
+
+DELETE FROM BOARD2 b;
+

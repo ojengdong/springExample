@@ -68,11 +68,13 @@ public class Board2ServiceImpl implements Board2Service {
 			if(vo!=null) {
 				if(mode==1) {
 					board2dao.updateReadCount(id); // 조회수 증가 : DB의 조회수 증가
+					
+					// 이미 가져온 VO는 조회수가 증가전이다.
+					// 다시 DB에서 가져오면 속도가 떨어진다. 
+					// 그냥 조회수를 1증가 시키는것이 더 효율적이다.
+					vo.setReadCount(vo.getReadCount()+1);
 				}
-				// 이미 가져온 VO는 조회수가 증가전이다.
-				// 다시 DB에서 가져오면 속도가 떨어진다. 
-				// 그냥 조회수를 1증가 시키는것이 더 효율적이다.
-				vo.setReadCount(vo.getReadCount()+1);
+				
 				vo.setFileList(board2FileDAO.selectByRef(id));
 			}
 		}catch (Exception e) {
@@ -124,7 +126,7 @@ public class Board2ServiceImpl implements Board2Service {
 						Board2FileVO board2FileVO = board2FileDAO.selectById(Integer.parseInt(s));
 						String fileName = board2FileVO.getUuid() + "_" + board2FileVO.getFileName();
 						File file = new File(filePath, fileName);
-						if(!file.exists()){ // 파일이 존재하면
+						if(file.exists()){ // 파일이 존재하면
 							file.delete(); // 파일 삭제
 						}
 						// 2. db의 정보를 삭제
@@ -140,9 +142,41 @@ public class Board2ServiceImpl implements Board2Service {
 	}
 
 	@Override
-	public boolean delete(Board2VO board2vo) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean delete(Board2VO board2vo, String filePath) {
+		log.info("delete({},{}) 호출", board2vo, filePath);
+		boolean result = false;
+		//------------------------------------------------------------------------------------
+		try {
+			if(board2vo != null) {
+//				1. 그 글에 해당하는 파일을 모두 삭제한다.
+				List<Board2FileVO> fileList = board2FileDAO.selectByRef(board2vo.getId());
+//				첨부파일이 있다면
+				if(fileList != null && fileList.size() > 0) {
+					for(Board2FileVO vo : fileList) {
+//						실제 서버에 있는 파일을 지운다.
+						String fileName = vo.getUuid() + "_" + vo.getFileName();
+						File file = new File(filePath, fileName);
+						if(file.exists()) {
+							log.info("파일이 없습니다.");
+							file.delete();
+						}
+//						DB에서 지운다.
+						board2FileDAO.deleteById(vo.getId());
+					}	
+				}
+			}
+
+//			2. 글을 삭제
+			board2dao.delete(board2vo.getId());
+			result = true;
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		//------------------------------------------------------------------------------------
+		
+		log.info("delete({},{}) 리턴 {}", board2vo, filePath, result);
+		return result;
 	}
 	
 	

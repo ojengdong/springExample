@@ -13,5 +13,5 @@ public interface Board2Service {
 	// 수정하기
 	boolean update(Board2VO board2vo, String delList, String filePath);
 	// 삭제하기
-	boolean delete(Board2VO board2vo);
+	boolean delete(Board2VO board2vo, String filePath);
 }

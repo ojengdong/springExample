@@ -194,6 +194,71 @@ public class PdsController {
 
 		return "redirect:/pds/list?p=1&b=" + cv.getB() + "&s=" + cv.getS();
 	}
+	
+//	삭제하기 
+//	삭제하기 폼
+	@GetMapping(value = "/delete")
+	public String deleteForm(@ModelAttribute CommVO cv, Model model) {
+		Board2VO vo = board2Service.selectById(cv.getId(), cv.getMode());
+		if (vo == null) { // 글이 존재하지 않으면 리스트로
+			return "redirect:/pds/list?p=1&b=" + cv.getB() + "&s=" + cv.getS();
+		}
+		// 존재하면 내용보기로
+		model.addAttribute("board", vo);
+		model.addAttribute("cv", cv);
+		return "board/delete";
+	}
+	
+
+	// 삭제하기 완료
+		@GetMapping(value = "/deleteOk")
+		public String deleteOkGet() {
+			return "redirect:/pds/list";
+		}
+
+		@PostMapping(value = "/updateOk")
+		public String deleteOkPost(@ModelAttribute CommVO cv, // 페이지 정보
+				@ModelAttribute Board2VO vo, // 글 내용
+				HttpServletRequest request,) throws IOException {
+			// 내용은 받았지만 파일은 받지 않았다.
+			// 첨부파일 처리를 여기서 해준다.
+			if (uploadFile != null && uploadFile.length > 0) { // 파일이 존재 한다면
+				List<Board2FileVO> list = new ArrayList<>();
+				String filePath = getFilePath(); // 파일 저장 경로
+				log.info("서버 절대 경로 : " + filePath);
+				for (MultipartFile file : uploadFile) { // 반복한다.
+					if (!file.isEmpty()) { // 파일이 있다면
+						String uuid = UUID.randomUUID().toString();
+						String fileName = file.getOriginalFilename();
+						String contentType = file.getContentType();
+
+						File newFile = new File(filePath + uuid + "_" + fileName);
+						file.transferTo(newFile);
+
+						Board2FileVO board2FileVO = new Board2FileVO();
+						board2FileVO.setUuid(uuid);
+						board2FileVO.setFileName(fileName);
+						board2FileVO.setContentType(contentType);
+						board2FileVO.setRef(vo.getId()); // ref값을 원본의 id로 넣는다.
+						list.add(board2FileVO);
+					}
+				}
+				vo.setFileList(list);
+			}
+
+			// ip는 수동으로 넣어준다,
+			vo.setIp(request.getRemoteAddr());
+
+			// 서비스를 호출하여 실제로 DB에 저장을 해주자!!!
+			if (board2Service.delete(vo,  getFilePath())) {
+				log.info("삭제 성공!!!!");
+			} else {
+				log.info("삭제 실패!!!!");
+			}
+			;
+
+			return "redirect:/pds/list?p=1&b=" + cv.getB() + "&s=" + cv.getS();
+		}
 
 	// 파일을 다운로드할 메서드
 	@GetMapping(value = "/download")
@@ -228,4 +293,6 @@ public class PdsController {
 			f.mkdirs(); // 파일(폴더)이 존재하지 않으면 폴더를 생성한다.
 		return filePath;
 	}
+	
+
 }
