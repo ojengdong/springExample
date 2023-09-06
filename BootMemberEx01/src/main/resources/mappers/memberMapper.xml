@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <!-- namespace는 반드시 DAO인터페이스와 이름이 일치해야 한다. -->
+<mapper namespace="kr.kdata.member.dao.MemberDAO">
+	<!-- 매퍼파일에 태그 1개당 DAO인터페이스의 메서드 1개를 만든다. -->
+	<!-- SQL명령 1개당 태그 1개씩을 추가한다. -->
+
+	<!-- 1. 전체 개수 얻기 -->
+	<select id="selectCount" resultType="int">
+		select count(*) from member
+	</select>
+
+	<!-- 2. 지정 아이디의 개수 얻기 : 아이디 중복 확인 처리 -->
+	<select id="selectByUserIdCount" parameterType="string" resultType="int">
+		select count(*) from member where userid=#{userid}
+	</select>
+	
+	<!-- 3. 1개 가져오기 :로그인/정수수정/회원탈퇴 ... -->
+	<select id="selectByUserId" parameterType="string" resultType="MemberVO">
+		select * from member where userid=#{userid}
+	</select>
+	
+	<select id="selectById" parameterType="int" resultType="MemberVO">
+		select * from member where id=#{id}
+	</select>
+	
+	<!-- 전화번호로 찾기 -->
+	<select id="selectByPhone" parameterType="string" resultType="MemberVO">
+		select * from member where phone=#{phone}
+	</select>
+	
+	<!-- 4. 전체가져오기 : 관리자가 회원 목록보기(나중에 조건별, 페이징 처리) -->
+	<select id="selectByList" resultType="MemberVO">
+		select * from member order by id desc
+	</select>
+	<!-- 5. 저장 -->
+	<insert id="insert" parameterType="MemberVO">
+		INSERT INTO MEMBER VALUES 
+		(member_id_seq.nextval,#{userid},#{password},#{username},
+		  #{phone},#{email},#{postcode},#{addr1},#{addr2},0) 
+	</insert>
+	<!-- 6. 수정 -->
+	<update id="update"  parameterType="MemberVO">
+		update 
+			member
+		set
+			username = #{username}, phone=#{phone}, 
+			postcode=#{postcode},addr1=#{addr1},addr2=#{addr2}
+		where
+			id=#{id}
+	</update>
+	<!-- 7. 삭제 -->
+	<delete id="delete" parameterType="int">
+		delete from member where id=#{id}
+	</delete>
+	
+	<!-- 8. 임시 비번으로 고치기 -->
+	<update id="updatePassword" parameterType="hashmap">
+		update member set password=#{password} where userid=#{userid}
+	</update>
+	
+</mapper>

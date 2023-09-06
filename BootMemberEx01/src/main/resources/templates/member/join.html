@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<!-- Thymeleaf를 사용하겠다. -->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>회원 가입 페이지</title>
+<link rel="stylesheet" href="/webjars/bootstrap/5.3.0/dist/css/bootstrap.min.css">
+<script src="/webjars/jquery/3.6.4/dist/jquery.min.js"></script>
+<script src="/webjars/bootstrap/5.3.0/dist/js/bootstrap.min.js"></script>
+<script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
+<link rel="stylesheet" href="/css/style.css">
+<style type="text/css">
+	#info {
+		width: 90%;
+		padding: 10px;
+		margin: auto;
+		border: 1px solid gray;
+		margin-bottom: 10px;
+		font-size: 13pt;
+		border-radius: 20px;
+		color: black;
+	}
+	table {
+		width: 90%; margin: auto;border: 1px solid gray; padding:15px;
+	}
+	.title {
+		background-color: black; color: white;font-size: 18pt; text-align: center; padding: 5px;
+	}
+	.loginBtn{
+		width: 100px; height: 70px;
+	}
+	td {
+		padding: 5px;
+	}
+</style>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+	$(function(){
+		// 아이디 중복확인
+		// keyup 이벤트 지정
+		$("#userid").keyup(function(){
+			// 현재 값 읽기
+			let value = $(this).val();
+			// 입력한 아이디가 4글자 이상일때 중복처리
+			if(value!=null && value.length>=4){
+				// Ajax로 아이디 중복을 호출하여 처리를 한다.
+				axios.get('/api/count/' + value)
+				  .then(function (response) {
+				    // 성공 핸들링
+				    console.log(JSON.stringify(response));
+				    // alert("성공 : " + response.data)
+				    if(response.data==0){
+						$("#message").css('color', 'blue').html('사용가능한 아이디 입니다.');
+					}else{
+						$("#message").css('color', 'red').html('사용 불가능한 아이디 입니다.');
+					}
+				  })
+				  .catch(function (error) {
+				    // 에러 핸들링
+				    console.log(error);
+				    alert("에러발생 : " + error)
+				  })
+				  .finally(function () {
+				    // 항상 실행되는 영역
+				  });
+			}else{
+				$("#message").css('color', 'black').html(""); // 4자 미만이면 메세지 삭제
+			}
+		});
+	});
+	
+	// 우편번호 검색
+	function findZip(){
+		new daum.Postcode({
+	        oncomplete: function(data) {
+	            // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분입니다.
+	            // 예제를 참고하여 다양한 활용법을 확인해 보세요.
+	            document.querySelector("#postcode").value = data.zonecode;
+	            document.querySelector("#addr1").value = data.roadAddress;
+	            // document.querySelector("#addr1").value = data.jibunAddress;
+	            document.querySelector("#addr2").focus();
+	        }
+	    }).open();
+	}
+	
+	// 폼체크
+	function formCheck(){
+		let value = $("#userid").val();
+		if(value==null || value.trim().length==0){
+			alert("아이디는 반드시 입력해야 합니다.");
+			$("#userid").val("");
+			$("#userid").focus();
+			return false;
+		}
+		if(value.indexOf(" ")>0){
+			alert("아이디에는 공백을 포함할 수 없습니다.");
+			$("#userid").val("");
+			$("#userid").focus();
+			return false;
+		}
+		value = $("#password").val();
+		if(value==null || value.trim().length==0){
+			alert("비밀번호는 반드시 입력해야 합니다.");
+			$("#password").val("");
+			$("#password").focus();
+			return false;
+		}
+		value = $("#username").val();
+		if(value==null || value.trim().length==0){
+			alert("사용자 이름은 반드시 입력해야 합니다.");
+			$("#username").val("");
+			$("#username").focus();
+			return false;
+		}
+		value = $("#email").val();
+		if(value==null || value.trim().length==0){
+			alert("이메일 주소는 반드시 입력해야 합니다.");
+			$("#email").val("");
+			$("#email").focus();
+			return false;
+		}
+		if(CheckEmail(value)){
+			alert("이메일 주소 형식이 틀립니다.");
+			$("#email").val("");
+			$("#email").focus();
+			return false;
+		}
+		value = $("#phone").val();
+		if(value==null || value.trim().length==0){
+			alert("전화번호는 반드시 입력해야 합니다.");
+			$("#phone").val("");
+			$("#phone").focus();
+			return false;
+		}	
+			
+		value = $("#postcode").val();
+		if(value==null || value.trim().length==0){
+			alert("우편번호는 반드시 입력해야 합니다.");
+			$("#postcode").val("");
+			$("#postcode").focus();
+			return false;
+		}	
+		value = $("#addr2").val();
+		if(value==null || value.trim().length==0){
+			alert("상세주소는 반드시 입력해야 합니다.");
+			$("#addr2").val("");
+			$("#addr2").focus();
+			return false;
+		}	
+		// alert('색상 : ' + $("#message").css('color'));
+		// alert('색상 : ' + ($("#message").css('color')!='rgb(0, 0, 255)'));
+
+		if($("#message").css('color')!='rgb(0, 0, 255)'){
+			alert('아이디 중복확인을 다시하세요!!!');
+			$("#userid").val("");
+			$("#userid").focus();
+			return false;
+		};
+			
+		return true;
+	}
+	
+	
+	// 이메일이 잘못되었는지 확인하는 함수 
+	function CheckEmail(str){                                                 
+	    let regex = new RegExp("([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$");
+	    return !regex.test(str);     
+	}
+</script>
+</head>
+<body>
+	<div id="info">
+		<img src="/images/linux-icon.png" width="100" height="100" alt="귀여운 펭귄" />
+		<img src="/images/linux-icon2.png" width="100" height="100" alt="건방진 펭귄" />
+		<hr />
+		<form action="/member/joinOk" method="post" onsubmit="return formCheck()">
+		<table>
+			<tr>
+				<td class="title">회원 가입 하기</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="text" id="userid" name="userid" placeholder="사용자아이디" required />
+					<span id="message"></span>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="password" id="password" name="password" placeholder="사용자비밀번호" required />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="text" id="username" name="username" placeholder="사용자이름" required />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="email" id="email" name="email" placeholder="Email Address" required size="40"/>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="text" id="phone" name="phone" placeholder="전화번호" required />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="text" id="postcode" name="postcode" placeholder="우편번호" required onclick="findZip()"/>
+					<input type="button" value="우편번호찾기" onclick="findZip()" style="margin-bottom: 5px;"/>
+					<br />
+					<input type="text" id="addr1" name="addr1" placeholder="기본주소" readonly size="55"/>
+					&nbsp;
+					<input type="text" id="addr2" name="addr2" placeholder="상세주소" size="55"/>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="submit" value="회원가입하기" class="btn btn-sm btn-outline-success"/>					
+					
+					<input type="button" class="btn btn-sm btn-outline-success" value="Home" onclick="location.href='/'"/>
+				</td>
+			</tr>
+		</table>
+		</form>
+
+	</div>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<!-- Thymeleaf를 사용하겠다. -->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>메인페이지</title>
+<link rel="stylesheet" href="/webjars/bootstrap/5.3.0/dist/css/bootstrap.min.css">
+<script src="/webjars/jquery/3.6.4/dist/jquery.min.js"></script>
+<script src="/webjars/bootstrap/5.3.0/dist/js/bootstrap.min.js"></script>
+<script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
+<link rel="stylesheet" href="/css/style.css">
+<style type="text/css">
+#info {
+	width: 90%;
+	padding: 10px;
+	margin: auto;
+	border: 1px solid gray;
+	margin-bottom: 10px;
+	font-size: 13pt;
+	border-radius: 20px;
+	color: black;
+}
+</style>
+</head>
+<body>
+	<div id="info">
+		<h2>메인화면 입니다.</h2>
+		<h2>서버 시간 : [[${#dates.format(serverTime,'yy-MM-dd(E) HH:mm:ss')}]]</h2>
+		<h2>DB 시간 1 : [[${#dates.format(dbTime1,'yy-MM-dd(E) HH:mm:ss')}]]</h2>
+		<h2>DB 시간 2 : [[${#dates.format(dbTime2,'yy-MM-dd(E) HH:mm:ss')}]]</h2>
+		<!--/* 로그인이 되어있으면 인사말을 출력해주자 */-->
+		<th:block th:if="${session.mvo!=null}">
+			[[${session.mvo.username}]]([[${session.mvo.userid}]])님 반갑습니다.
+			<button>회원정보수정</button>
+			<button>회원탈퇴</button>
+		</th:block>			
+		<th:block th:if="${session.mvo==null}">
+			손님 반갑습니다.
+		</th:block>			
+		<hr />
+		<img src="/images/linux-icon.png" width="100" height="100" alt="귀여운 펭귄" />
+		<img src="/images/linux-icon2.png" width="100" height="100" alt="건방진 펭귄" />
+		<hr />
+		<a href="/"  class="btn btn-sm btn-outline-success">Home</a>
+		<a href="/html/hello.html"  class="btn btn-sm btn-outline-success">정적파일보기</a>
+		<a href="/swagger-ui/index.html"  class="btn btn-sm btn-outline-success">문서보기</a>
+		<a href="/test/today"  class="btn btn-sm btn-outline-success">날짜보기</a>
+		<a href="/test/없는주소"  class="btn btn-sm btn-outline-success">에러보기</a>
+		<a href="/cookie"  class="btn btn-sm btn-outline-success">모든 쿠키 보기</a>
+		
+		<!--/* 세션에 mvo라는 변수가 있으면 로그인 상태이고 없으면 로그아웃 상태이다. */-->
+		<th:block th:if="${session.mvo==null}">
+			<a href="/member/login"  class="btn btn-sm btn-outline-success">login하기</a>
+		</th:block>
+		<th:block th:if="${session.mvo!=null}">
+			<a href="/member/logout"  class="btn btn-sm btn-outline-success">logout 하기</a>
+		</th:block>
+		
+		
+	</div>
+</body>
+</html>

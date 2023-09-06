@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<!-- Thymeleaf를 사용하겠다. -->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>로그인페이지</title>
+<link rel="stylesheet" href="/webjars/bootstrap/5.3.0/dist/css/bootstrap.min.css">
+<script src="/webjars/jquery/3.6.4/dist/jquery.min.js"></script>
+<script src="/webjars/bootstrap/5.3.0/dist/js/bootstrap.min.js"></script>
+<script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
+<link rel="stylesheet" href="/css/style.css">
+<style type="text/css">
+	#info {
+		width: 90%;
+		padding: 10px;
+		margin: auto;
+		border: 1px solid gray;
+		margin-bottom: 10px;
+		font-size: 13pt;
+		border-radius: 20px;
+		color: black;
+	}
+	table {
+		width: 30%; margin: auto;border: 1px solid gray; padding:15px;
+	}
+	.title {
+		background-color: black; color: white;font-size: 18pt; text-align: center; padding: 5px;
+	}
+	.loginBtn{
+		width: 100px; height: 70px;
+	}
+	td {
+		padding: 5px;
+	}
+</style>
+<script>
+	function formCheck(){
+		let value = $("#userid").val();
+		if(value==null || value.trim().length==0){
+			alert("아이디는 반드시 입력해야 합니다.");
+			$("#userid").val("");
+			$("#userid").focus();
+			return false;
+		}
+		if(value.indexOf(" ")>0){
+			alert("아이디에는 공백을 포함할 수 없습니다.");
+			$("#userid").val("");
+			$("#userid").focus();
+			return false;
+		}
+		value = $("#password").val();
+		if(value==null || value.trim().length==0){
+			alert("비밀번호는 반드시 입력해야 합니다.");
+			$("#password").val("");
+			$("#password").focus();
+			return false;
+		}
+		return true;
+	}
+	
+</script>
+</head>
+<body>
+	<div id="info">
+		<img src="/images/linux-icon.png" width="100" height="100" alt="귀여운 펭귄" />
+		<img src="/images/linux-icon2.png" width="100" height="100" alt="건방진 펭귄" />
+		<hr />
+		<form action="/member/loginOk" method="post" onsubmit="return formCheck()">
+		<table>
+			<tr>
+				<td class="title" colspan="2">로그인하기</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="text" id="userid" name="userid" placeholder="사용자아이디" required tabindex="1" th:value="${userid}"/>
+				</td>
+				<td rowspan="2">
+					<input type="submit" value="로그인" class="loginBtn" tabindex="3"/>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="password" id="password" name="password" placeholder="사용자비밀번호" required tabindex="2" />
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<label>
+					<input type="checkbox" value="true" name="saveID" th:checked="${userid}"/>
+					아이디 저장하기						
+					</label>
+					<br />
+					[<a href="/member/findUserId">아이디 찾기</a>]
+					[<a href="/member/findPassword">비밀번호 찾기</a>]
+					[<a href="/member/join">회원가입</a>]
+				</td>
+			</tr>
+		</table>
+		</form>
+		<hr />
+		<a href="/"  class="btn btn-sm btn-outline-success">Home</a>
+	</div>
+</body>
+</html>
